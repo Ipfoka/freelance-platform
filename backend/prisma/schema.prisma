@@ -1,0 +1,188 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String          @id @default(cuid())
+  email             String          @unique
+  password          String
+  firstName         String
+  lastName          String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  hashedRefreshToken String?
+  avatar            String?
+  role              String          @default("freelancer")
+  plan              String          @default("free")
+  boostedUntil      DateTime?
+  stripeCustomerId  String?
+  profile           Profile?
+  wallet            Wallet?
+  sentMessages      Message[]       @relation("SentMessages")
+  receivedMessages  Message[]       @relation("ReceivedMessages")
+  sentProposals     Proposal[]      @relation("SentProposals")
+  receivedProposals Proposal[]      @relation("ReceivedProposals")
+  projects          Project[]
+  dealsAsSender     Deal[]          @relation("DealsAsSender")
+  dealsAsReceiver   Deal[]          @relation("DealsAsReceiver")
+  disputes          Dispute[]       @relation("UserDisputes")
+  resolvedDisputes  Dispute[]       @relation("DisputeResolver")
+  payoutRequests    PayoutRequest[]
+  sentInvites       ProjectInvite[] @relation("ProjectInviteClient")
+  receivedInvites   ProjectInvite[] @relation("ProjectInviteFreelancer")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  bio       String?
+  avatar    String?
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id           String         @id @default(cuid())
+  title        String
+  description  String
+  budget       Float
+  skills       String[]
+  maxProposals Int?
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proposals    Proposal[]
+  deals        Deal[]
+  invites      ProjectInvite[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Proposal {
+  id         String    @id @default(cuid())
+  content    String
+  price      Float
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  senderId   String
+  sender     User      @relation("SentProposals", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User      @relation("ReceivedProposals", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deals      Deal[]
+
+  @@unique([projectId, senderId])
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  balance   Float    @default(0.0)
+  pending   Float    @default(0.0)
+  currency  String   @default("USD")
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Deal {
+  id              String        @id @default(cuid())
+  projectId       String
+  project         Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  proposalId      String?
+  proposal        Proposal?     @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  senderId        String
+  sender          User          @relation("DealsAsSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId      String
+  receiver        User          @relation("DealsAsReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  amount          Float
+  currency        String        @default("USD")
+  escrowPaymentId String?
+  status          String        @default("created")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  disputes        Dispute[]
+  transactions    Transaction[]
+  messages        Message[]
+}
+
+model Dispute {
+  id           String    @id @default(cuid())
+  dealId       String
+  deal         Deal      @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation("UserDisputes", fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String
+  status       String    @default("open")
+  resolution   String?
+  resolvedAt   DateTime?
+  resolvedById String?
+  resolvedBy   User?     @relation("DisputeResolver", fields: [resolvedById], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Transaction {
+  id              String         @id @default(cuid())
+  amount          Float
+  type            String
+  description     String?
+  dealId          String?
+  deal            Deal?          @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  payoutRequestId String?
+  payoutRequest   PayoutRequest? @relation(fields: [payoutRequestId], references: [id], onDelete: Cascade)
+  createdAt       DateTime       @default(now())
+}
+
+model PayoutRequest {
+  id           String        @id @default(cuid())
+  amount       Float
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status       String        @default("pending")
+  fee          Float         @default(0)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Message {
+  id            String   @id @default(cuid())
+  content       String
+  attachmentUrl String?
+  senderId      String
+  sender        User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId    String
+  receiver      User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  dealId        String?
+  deal          Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ProjectInvite {
+  id           String   @id @default(cuid())
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  clientId     String
+  client       User     @relation("ProjectInviteClient", fields: [clientId], references: [id], onDelete: Cascade)
+  freelancerId String
+  freelancer   User     @relation("ProjectInviteFreelancer", fields: [freelancerId], references: [id], onDelete: Cascade)
+  message      String?
+  status       String   @default("sent")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([projectId, freelancerId])
+  @@index([projectId])
+  @@index([clientId])
+  @@index([freelancerId])
+}

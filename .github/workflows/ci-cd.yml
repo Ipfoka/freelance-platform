@@ -1,0 +1,116 @@
+﻿name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+          cd ../frontend
+          npm ci
+
+      - name: Run linting (backend)
+        run: |
+          cd backend
+          npm run lint
+
+      - name: Run linting (frontend)
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run tests (backend)
+        run: |
+          cd backend
+          npm run test -- --passWithNoTests
+
+      - name: Run e2e tests (backend)
+        run: |
+          cd backend
+          DATABASE_URL=postgresql://test:test@localhost:5432/test JWT_SECRET=ci_secret_very_long JWT_REFRESH_SECRET=ci_refresh_secret_very_long npm run test:e2e
+
+      - name: Run tests (frontend)
+        run: |
+          cd frontend
+          npm run test
+
+      - name: Build (backend)
+        run: |
+          cd backend
+          npm run build
+
+      - name: Build (frontend)
+        run: |
+          cd frontend
+          npm run build
+
+  deploy-staging:
+    needs: lint-test-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run Prisma migrations
+        run: |
+          cd backend
+          npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Deploy to Render (backend)
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -d '{"clearCache":"clear"}' \
+            "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
+
+      - name: Deploy to Vercel (frontend)
+        run: |
+          npm install -g vercel@latest
+          cd frontend
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
