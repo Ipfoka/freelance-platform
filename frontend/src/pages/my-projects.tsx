@@ -20,7 +20,7 @@ export default function MyProjectsPage() {
         const data = await apiFetch<Project[]>('/api/projects', { skipAuth: true });
         setProjects(data);
       } catch (err: any) {
-        setError(err.message || 'Cannot load projects');
+        setError(err.message || 'Не удалось загрузить проекты');
       }
     }
 
@@ -28,10 +28,10 @@ export default function MyProjectsPage() {
   }, [apiFetch]);
 
   return (
-    <AppLayout title="My Projects" requireAuth allowedRoles={['client']}>
+    <AppLayout title="Мои проекты" requireAuth allowedRoles={['client']}>
       <div className="card-grid">
         {error && <p className="error">{error}</p>}
-        {myProjects.length === 0 && <p className="muted">No projects created yet.</p>}
+        {myProjects.length === 0 && <p className="muted">Вы пока не создали ни одного проекта.</p>}
 
         {myProjects.map((project) => (
           <article className="card" key={project.id}>
@@ -39,7 +39,7 @@ export default function MyProjectsPage() {
             <p className="muted">{project.description}</p>
             <div className="action-row">
               <Link className="primary-btn" href={`/projects/${project.id}`} data-testid="view-proposals">
-                View proposals
+                Смотреть отклики
               </Link>
             </div>
           </article>

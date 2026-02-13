@@ -27,14 +27,14 @@ export default function DealsPage() {
       });
       if (result.platformFee !== undefined && result.freelancerAmount !== undefined) {
         setMessage(
-          `Deal confirmed. Net payout: ${result.freelancerAmount}. Platform fee: ${result.platformFee}.`,
+          `Сделка подтверждена. Исполнителю: ${result.freelancerAmount}. Комиссия платформы: ${result.platformFee}.`,
         );
       } else {
-        setMessage('Deal confirmed and funds released to freelancer wallet.');
+        setMessage('Сделка подтверждена, средства отправлены в кошелек исполнителя.');
       }
       setConfirmDealId('');
     } catch (err: any) {
-      setError(err.message || 'Cannot confirm deal');
+      setError(err.message || 'Не удалось подтвердить сделку');
     }
   }
 
@@ -52,27 +52,27 @@ export default function DealsPage() {
         }),
       });
 
-      setMessage('Dispute created. Admin review required.');
+      setMessage('Спор создан. Требуется проверка администратора.');
       setDisputeDealId('');
       setDisputeTitle('');
       setDisputeDescription('');
     } catch (err: any) {
-      setError(err.message || 'Cannot create dispute');
+      setError(err.message || 'Не удалось создать спор');
     }
   }
 
   return (
-    <AppLayout title="Deals" requireAuth>
+    <AppLayout title="Сделки" requireAuth>
       <div className="card-grid">
         {message && <p className="success">{message}</p>}
         {error && <p className="error">{error}</p>}
 
         <section className="card">
-          <h2>Confirm completed deal</h2>
-          <p className="muted">Use this after Stripe payment succeeds and work is accepted.</p>
+          <h2>Подтверждение завершенной сделки</h2>
+          <p className="muted">Используйте после успешной оплаты и приемки работы.</p>
           <form className="card-grid" onSubmit={onConfirmDeal}>
             <label className="field">
-              <span>Deal ID</span>
+              <span>ID сделки</span>
               <input
                 value={confirmDealId}
                 onChange={(e) => setConfirmDealId(e.target.value)}
@@ -81,26 +81,26 @@ export default function DealsPage() {
               />
             </label>
             <button className="primary-btn" type="submit">
-              Confirm deal
+              Подтвердить сделку
             </button>
           </form>
         </section>
 
         <section className="card">
-          <h2>Create dispute</h2>
+          <h2>Открыть спор</h2>
           <form className="card-grid" onSubmit={onCreateDispute}>
             <label className="field">
-              <span>Deal ID</span>
+              <span>ID сделки</span>
               <input value={disputeDealId} onChange={(e) => setDisputeDealId(e.target.value)} required />
             </label>
 
             <label className="field">
-              <span>Title</span>
+              <span>Заголовок</span>
               <input value={disputeTitle} onChange={(e) => setDisputeTitle(e.target.value)} required />
             </label>
 
             <label className="field">
-              <span>Description</span>
+              <span>Описание</span>
               <textarea
                 value={disputeDescription}
                 onChange={(e) => setDisputeDescription(e.target.value)}
@@ -109,7 +109,7 @@ export default function DealsPage() {
             </label>
 
             <button className="danger-btn" type="submit">
-              Open dispute
+              Открыть спор
             </button>
           </form>
         </section>

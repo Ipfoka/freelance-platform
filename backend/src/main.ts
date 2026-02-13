@@ -38,13 +38,64 @@ async function bootstrap() {
     }),
   );
 
-  const corsOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
-    : true;
+  const configuredOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',')
+        .map((origin) => origin.trim().replace(/\/+$/, ''))
+        .filter(Boolean)
+    : [];
+  const allowNetlifyOrigins = ['true', '1'].includes(
+    (process.env.CORS_ALLOW_NETLIFY || '').toLowerCase(),
+  );
+  const allowAnyOrigin = configuredOrigins.length === 0 && !allowNetlifyOrigins;
+
+  const corsOriginResolver = (origin: string | undefined): boolean => {
+    if (!origin) {
+      return true;
+    }
+
+    if (allowAnyOrigin) {
+      return true;
+    }
+
+    const normalizedOrigin = origin.trim().replace(/\/+$/, '');
+    if (configuredOrigins.includes(normalizedOrigin)) {
+      return true;
+    }
+
+    if (allowNetlifyOrigins) {
+      try {
+        const parsed = new URL(normalizedOrigin);
+        if (parsed.hostname.endsWith('.netlify.app')) {
+          return true;
+        }
+      } catch {
+        return false;
+      }
+    }
+
+    return false;
+  };
 
   app.enableCors({
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      if (corsOriginResolver(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      logger.warn(`Blocked by CORS policy: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
+    },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+    ],
+    optionsSuccessStatus: 204,
   });
 
   const config = new DocumentBuilder()

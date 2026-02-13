@@ -184,7 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const auth = await parseJsonSafe<AuthResponse>(response);
       if (!auth) {
-        throw new Error('Invalid response from auth service');
+        throw new Error('Некорректный ответ сервиса авторизации');
       }
 
       persistSession(auth);
@@ -206,7 +206,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const auth = await parseJsonSafe<AuthResponse>(response);
       if (!auth) {
-        throw new Error('Invalid response from auth service');
+        throw new Error('Некорректный ответ сервиса авторизации');
       }
 
       persistSession(auth);
@@ -281,7 +281,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider');
+    throw new Error('useAuth должен использоваться внутри AuthProvider');
   }
   return context;
 }

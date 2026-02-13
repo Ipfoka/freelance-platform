@@ -25,7 +25,7 @@ export async function extractError(response: Response): Promise<string> {
     return payload.error;
   }
 
-  return `Request failed with status ${response.status}`;
+  return `Ошибка запроса, статус ${response.status}`;
 }
 
 export function buildUrl(path: string): string {

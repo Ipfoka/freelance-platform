@@ -32,6 +32,12 @@ import { HealthModule } from './health/health.module';
         STRIPE_WEBHOOK_SECRET: Joi.string().allow('').optional(),
         REDIS_URL: Joi.string().uri().optional(),
         CORS_ORIGIN: Joi.string().optional(),
+        CORS_ALLOW_NETLIFY: Joi.boolean()
+          .truthy('true')
+          .truthy('1')
+          .falsy('false')
+          .falsy('0')
+          .default(false),
         RATE_LIMIT_TTL: Joi.number().integer().min(1).default(60),
         RATE_LIMIT_LIMIT: Joi.number().integer().min(1).default(120),
         PLATFORM_COMMISSION_RATE: Joi.number().min(0).max(0.9).default(0.1),

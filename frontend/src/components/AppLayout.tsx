@@ -11,6 +11,12 @@ type Props = {
   allowedRoles?: UserRole[];
 };
 
+function roleLabel(role: UserRole) {
+  if (role === 'client') return 'Заказчик';
+  if (role === 'freelancer') return 'Исполнитель';
+  return 'Администратор';
+}
+
 export function AppLayout({
   title,
   children,
@@ -78,7 +84,7 @@ export function AppLayout({
       <main className="container">
         <div className="page-title-row">
           <h1>{title}</h1>
-          {user && <span className="role-badge">Роль: {user.role}</span>}
+          {user && <span className="role-badge">Роль: {roleLabel(user.role)}</span>}
         </div>
         {children}
       </main>

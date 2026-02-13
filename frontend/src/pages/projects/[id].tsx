@@ -67,7 +67,7 @@ export default function ProjectDetailsPage() {
 
       if (!current) {
         setProject(null);
-        setError('Project not found');
+        setError('Проект не найден');
         return;
       }
 
@@ -103,7 +103,7 @@ export default function ProjectDetailsPage() {
         setInviteQuota(null);
       }
     } catch (err: any) {
-      setError(err.message || 'Cannot load project');
+      setError(err.message || 'Не удалось загрузить проект');
       setRecommendedExecutors([]);
       setInvites([]);
       setInviteQuota(null);
@@ -133,11 +133,11 @@ export default function ProjectDetailsPage() {
         }),
       });
 
-      setSuccess('Proposal submitted. Proposals are free for freelancers.');
+      setSuccess('Отклик отправлен. Отклики для исполнителей бесплатные.');
       setProposalContent('');
       setProposalPrice('');
     } catch (err: any) {
-      setError(err.message || 'Cannot submit proposal');
+      setError(err.message || 'Не удалось отправить отклик');
     }
   }
 
@@ -159,9 +159,9 @@ export default function ProjectDetailsPage() {
       });
 
       setDealResult(result);
-      setSuccess('Deal created. Complete payment using returned client secret.');
+      setSuccess('Сделка создана. Проведите оплату по возвращенному client secret.');
     } catch (err: any) {
-      setError(err.message || 'Cannot create deal');
+      setError(err.message || 'Не удалось создать сделку');
     }
   }
 
@@ -188,18 +188,18 @@ export default function ProjectDetailsPage() {
           item.id === freelancerId ? { ...item, alreadyInvited: true } : item,
         ),
       );
-      setSuccess('Invitation sent.');
+      setSuccess('Приглашение отправлено.');
     } catch (err: any) {
-      setError(err.message || 'Cannot invite freelancer');
+      setError(err.message || 'Не удалось пригласить исполнителя');
     } finally {
       setInvitingFreelancerId(null);
     }
   }
 
   return (
-    <AppLayout title="Project details">
+    <AppLayout title="Детали проекта">
       <div className="card-grid">
-        {loading && <p className="muted">Loading project...</p>}
+        {loading && <p className="muted">Загрузка проекта...</p>}
         {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
 
@@ -208,7 +208,7 @@ export default function ProjectDetailsPage() {
             <h2>{project.title}</h2>
             <p>{project.description}</p>
             <p>
-              <strong>Budget:</strong> ${project.budget.toFixed(2)}
+              <strong>Бюджет:</strong> ${project.budget.toFixed(2)}
             </p>
             <div className="badge-list">
               {project.skills.map((skill) => (
@@ -218,7 +218,7 @@ export default function ProjectDetailsPage() {
               ))}
             </div>
             <p className="muted">
-              Posted by: {project.user?.firstName} {project.user?.lastName} (
+              Разместил: {project.user?.firstName} {project.user?.lastName} (
               {project.user?.email})
             </p>
           </section>
@@ -226,13 +226,13 @@ export default function ProjectDetailsPage() {
 
         {project && isFreelancer && (
           <section className="card">
-            <h3>Submit proposal</h3>
+            <h3>Оставить отклик</h3>
             <p className="muted">
-              You can submit proposals for free. No paywall per response.
+              Отклики бесплатные, без платного доступа за каждый ответ.
             </p>
             <form className="card-grid" onSubmit={submitProposal}>
               <label className="field">
-                <span>Cover note</span>
+                <span>Комментарий к отклику</span>
                 <textarea
                   value={proposalContent}
                   onChange={(e) => setProposalContent(e.target.value)}
@@ -242,7 +242,7 @@ export default function ProjectDetailsPage() {
               </label>
 
               <label className="field">
-                <span>Price</span>
+                <span>Цена</span>
                 <input
                   value={proposalPrice}
                   onChange={(e) => setProposalPrice(e.target.value)}
@@ -259,7 +259,7 @@ export default function ProjectDetailsPage() {
                 className="primary-btn"
                 data-testid="submit-proposal"
               >
-                Submit proposal
+                Отправить отклик
               </button>
             </form>
           </section>
@@ -267,20 +267,20 @@ export default function ProjectDetailsPage() {
 
         {project && isOwnerClient && (
           <section className="card card-grid">
-            <h3>Top recommended executors</h3>
+            <h3>Топ рекомендованных исполнителей</h3>
             {inviteQuota && (
               <p className="muted">
-                Plan: {inviteQuota.plan}. Invites used: {inviteQuota.used}/
-                {inviteQuota.limit}. Remaining: {inviteQuota.remaining}.
+                Тариф: {inviteQuota.plan}. Приглашений использовано: {inviteQuota.used}/
+                {inviteQuota.limit}. Осталось: {inviteQuota.remaining}.
               </p>
             )}
             {recommendationsLoading && (
-              <p className="muted">Ranking freelancers...</p>
+              <p className="muted">Ранжируем исполнителей...</p>
             )}
             {!recommendationsLoading && recommendedExecutors.length === 0 && (
               <p className="muted">
-                No ranked freelancers yet. They will appear after completed
-                deals in similar skills.
+                Пока нет исполнителей в выдаче. Они появятся после завершенных
+                сделок в похожих навыках.
               </p>
             )}
 
@@ -293,15 +293,15 @@ export default function ProjectDetailsPage() {
                   ({freelancer.email})
                 </p>
                 <p>
-                  <strong>Score:</strong> {freelancer.score.toFixed(1)}
+                  <strong>Рейтинг:</strong> {freelancer.score.toFixed(1)}
                 </p>
                 <p className="muted">
-                  Completed deals: {freelancer.stats.completedDeals}. Skill
-                  matches: {freelancer.stats.matchedSkillDeals}. Avg deal: $
+                  Завершенных сделок: {freelancer.stats.completedDeals}. Совпадений
+                  по навыкам: {freelancer.stats.matchedSkillDeals}. Средний чек: $
                   {freelancer.stats.averageAmount.toFixed(2)}.
                 </p>
                 {freelancer.isBoosted && (
-                  <p className="success">Boosted profile active</p>
+                  <p className="success">Активен буст профиля</p>
                 )}
 
                 <button
@@ -315,10 +315,10 @@ export default function ProjectDetailsPage() {
                   onClick={() => void inviteFreelancer(freelancer.id)}
                 >
                   {freelancer.alreadyInvited
-                    ? 'Already invited'
+                    ? 'Уже приглашен'
                     : invitingFreelancerId === freelancer.id
-                      ? 'Inviting...'
-                      : 'Invite'}
+                      ? 'Приглашаем...'
+                      : 'Пригласить'}
                 </button>
               </article>
             ))}
@@ -327,8 +327,8 @@ export default function ProjectDetailsPage() {
 
         {project && isOwnerClient && (
           <section className="card card-grid">
-            <h3>Sent invites</h3>
-            {invites.length === 0 && <p className="muted">No invites sent yet.</p>}
+            <h3>Отправленные приглашения</h3>
+            {invites.length === 0 && <p className="muted">Приглашений пока нет.</p>}
             {invites.map((invite) => (
               <article className="card" key={invite.id}>
                 <p>
@@ -337,7 +337,7 @@ export default function ProjectDetailsPage() {
                   </strong>{' '}
                   ({invite.freelancer?.email})
                 </p>
-                <p className="muted">Status: {invite.status}</p>
+                <p className="muted">Статус: {invite.status}</p>
               </article>
             ))}
           </section>
@@ -345,8 +345,8 @@ export default function ProjectDetailsPage() {
 
         {project && isOwnerClient && (
           <section className="card card-grid">
-            <h3>Received proposals</h3>
-            {proposals.length === 0 && <p className="muted">No proposals yet.</p>}
+            <h3>Полученные отклики</h3>
+            {proposals.length === 0 && <p className="muted">Откликов пока нет.</p>}
 
             {proposals.map((proposal) => (
               <article className="card" key={proposal.id}>
@@ -358,15 +358,15 @@ export default function ProjectDetailsPage() {
                 </p>
                 <p>{proposal.content}</p>
                 <p>
-                  <strong>Price:</strong> ${proposal.price.toFixed(2)}
+                  <strong>Цена:</strong> ${proposal.price.toFixed(2)}
                 </p>
                 {proposal.sender?.boostedUntil && (
-                  <p className="success">Boosted freelancer</p>
+                  <p className="success">Исполнитель с активным бустом</p>
                 )}
 
                 <div className="two-col">
                   <label className="field">
-                    <span>Deal amount</span>
+                    <span>Сумма сделки</span>
                     <input
                       value={dealDrafts[proposal.id]?.amount || ''}
                       onChange={(e) =>
@@ -385,7 +385,7 @@ export default function ProjectDetailsPage() {
                   </label>
 
                   <label className="field">
-                    <span>Currency</span>
+                    <span>Валюта</span>
                     <select
                       value={dealDrafts[proposal.id]?.currency || 'USD'}
                       onChange={(e) =>
@@ -413,7 +413,7 @@ export default function ProjectDetailsPage() {
                   data-testid="accept-proposal"
                   onClick={() => void createDeal(proposal)}
                 >
-                  Create deal from proposal
+                  Создать сделку из отклика
                 </button>
               </article>
             ))}
@@ -422,18 +422,18 @@ export default function ProjectDetailsPage() {
 
         {dealResult && (
           <section className="card">
-            <h3>Latest deal result</h3>
+            <h3>Последняя созданная сделка</h3>
             <p>
-              <strong>Deal ID:</strong> {dealResult.deal.id}
+              <strong>ID сделки:</strong> {dealResult.deal.id}
             </p>
             <p>
-              <strong>Status:</strong> {dealResult.deal.status}
+              <strong>Статус:</strong> {dealResult.deal.status}
             </p>
             <p>
-              <strong>Stripe client secret:</strong> {dealResult.clientSecret || 'N/A'}
+              <strong>Stripe client secret:</strong> {dealResult.clientSecret || 'нет'}
             </p>
             <p className="muted">
-              After completing Stripe payment, confirm the deal on the deals page.
+              После завершения оплаты подтвердите сделку на странице &quot;Сделки&quot;.
             </p>
           </section>
         )}
