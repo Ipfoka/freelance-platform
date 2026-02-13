@@ -30,10 +30,10 @@ export default function WalletPage() {
 
       setLastPayout(payout);
       setAmount('');
-      setMessage('Payout request created. Admin has to process it.');
+      setMessage('Заявка на вывод создана. Ожидает обработки администратором.');
       await refreshProfile();
     } catch (err: any) {
-      setError(err.message || 'Cannot create payout');
+      setError(err.message || 'Не удалось создать заявку на вывод');
     }
   }
 
@@ -48,34 +48,34 @@ export default function WalletPage() {
       });
       setLastPayout(payout);
       setPayoutId('');
-      setMessage('Payout request processed.');
+      setMessage('Заявка на вывод обработана.');
       await refreshProfile();
     } catch (err: any) {
-      setError(err.message || 'Cannot process payout');
+      setError(err.message || 'Не удалось обработать выплату');
     }
   }
 
   return (
-    <AppLayout title="Wallet" requireAuth>
+    <AppLayout title="Кошелек" requireAuth>
       <div className="card-grid">
         <section className="card">
-          <h2>Current balance</h2>
+          <h2>Текущий баланс</h2>
           <p>
             <strong>
               {profile?.wallet?.balance?.toFixed(2) || '0.00'} {profile?.wallet?.currency || 'USD'}
             </strong>
           </p>
-          <p className="muted">Pending: {profile?.wallet?.pending?.toFixed(2) || '0.00'}</p>
+          <p className="muted">В ожидании: {profile?.wallet?.pending?.toFixed(2) || '0.00'}</p>
         </section>
 
         {message && <p className="success">{message}</p>}
         {error && <p className="error">{error}</p>}
 
         <section className="card">
-          <h2>Request payout</h2>
+          <h2>Вывод средств</h2>
           <form className="card-grid" onSubmit={requestPayout}>
             <label className="field">
-              <span>Amount</span>
+              <span>Сумма</span>
               <input
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
@@ -87,21 +87,21 @@ export default function WalletPage() {
               />
             </label>
             <button className="primary-btn" type="submit" data-testid="request-payout">
-              Request payout
+              Отправить заявку
             </button>
           </form>
         </section>
 
         {user?.role === 'admin' && (
           <section className="card">
-            <h2>Admin payout processing</h2>
+            <h2>Обработка выплат (админ)</h2>
             <form className="card-grid" onSubmit={processPayout}>
               <label className="field">
-                <span>Payout request ID</span>
+                <span>ID заявки на вывод</span>
                 <input value={payoutId} onChange={(e) => setPayoutId(e.target.value)} required />
               </label>
               <button className="secondary-btn" type="submit">
-                Process payout
+                Обработать выплату
               </button>
             </form>
           </section>
@@ -109,18 +109,18 @@ export default function WalletPage() {
 
         {lastPayout && (
           <section className="card">
-            <h2>Latest payout request</h2>
+            <h2>Последняя заявка на вывод</h2>
             <p>
               <strong>ID:</strong> {lastPayout.id}
             </p>
             <p>
-              <strong>Amount:</strong> {lastPayout.amount}
+              <strong>Сумма:</strong> {lastPayout.amount}
             </p>
             <p>
-              <strong>Fee:</strong> {lastPayout.fee}
+              <strong>Комиссия:</strong> {lastPayout.fee}
             </p>
             <p>
-              <strong>Status:</strong> {lastPayout.status}
+              <strong>Статус:</strong> {lastPayout.status}
             </p>
           </section>
         )}

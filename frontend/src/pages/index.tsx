@@ -1,52 +1,54 @@
-﻿import type { NextPage } from 'next';
+import type { NextPage } from 'next';
 import Link from 'next/link';
 import Head from 'next/head';
 import { AppLayout } from '../components/AppLayout';
 
 const Home: NextPage = () => {
   return (
-    <AppLayout title="Freelance Marketplace MVP">
+    <AppLayout title="Биржа Telegram-автоматизации">
       <Head>
-        <title>Freelance Platform</title>
-        <meta name="description" content="Freelance platform MVP" />
+        <title>TG Биржа Автоматизации</title>
+        <meta
+          name="description"
+          content="Биржа специалистов по Telegram-ботам, Mini Apps, интеграциям и AI-автоматизации."
+        />
       </Head>
 
       <div className="card-grid">
-        <section className="card">
-          <h2>Current MVP Scope</h2>
-          <p className="muted">
-            Auth, projects, proposals, deals, payouts and profile management are wired to the backend API.
+        <section className="hero">
+          <p className="hero-kicker">Niche-first фриланс платформа</p>
+          <h2>Проекты по Telegram-ботам, интеграциям и AI-автоматизации</h2>
+          <p>
+            Отклики бесплатные. Монетизация платформы через комиссию сделок и
+            платные бусты профиля.
           </p>
           <div className="action-row">
             <Link className="primary-btn" href="/auth/register">
-              Create account
-            </Link>
-            <Link className="secondary-btn" href="/auth/login">
-              Sign in
+              Начать сейчас
             </Link>
             <Link className="secondary-btn" href="/projects">
-              Browse projects
+              Смотреть проекты
             </Link>
           </div>
         </section>
 
         <section className="card two-col">
           <div>
-            <h3>Client flow</h3>
+            <h3>Для заказчика</h3>
             <div className="badge-list">
-              <span className="badge">Register as client</span>
-              <span className="badge">Create project</span>
-              <span className="badge">Review proposals</span>
-              <span className="badge">Create and confirm deal</span>
+              <span className="badge">Шаблон ТЗ под TG-автоматизацию</span>
+              <span className="badge">Авто-теги и матчиннг исполнителей</span>
+              <span className="badge">Инвайт топов в один клик</span>
+              <span className="badge">Escrow и безопасная сделка</span>
             </div>
           </div>
           <div>
-            <h3>Freelancer flow</h3>
+            <h3>Для исполнителя</h3>
             <div className="badge-list">
-              <span className="badge">Register as freelancer</span>
-              <span className="badge">Apply to projects</span>
-              <span className="badge">Receive released funds</span>
-              <span className="badge">Request payout</span>
+              <span className="badge">Бесплатные отклики</span>
+              <span className="badge">Профиль и кошелек</span>
+              <span className="badge">Выплаты и история сделок</span>
+              <span className="badge">Буст профиля для роста видимости</span>
             </div>
           </div>
         </section>

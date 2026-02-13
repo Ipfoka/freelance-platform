@@ -30,18 +30,18 @@ export default function RegisterPage() {
       await register({ firstName, lastName, email, password, role });
       await router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      setError(err.message || 'Не удалось зарегистрироваться');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AppLayout title="Create Account">
+    <AppLayout title="Регистрация">
       <form className="card card-grid" onSubmit={onSubmit}>
         <div className="two-col">
           <label className="field">
-            <span>First name</span>
+            <span>Имя</span>
             <input
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
@@ -51,7 +51,7 @@ export default function RegisterPage() {
           </label>
 
           <label className="field">
-            <span>Last name</span>
+            <span>Фамилия</span>
             <input
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
@@ -73,7 +73,7 @@ export default function RegisterPage() {
         </label>
 
         <label className="field">
-          <span>Password (min 8 chars)</span>
+          <span>Пароль (минимум 8 символов)</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -85,17 +85,17 @@ export default function RegisterPage() {
         </label>
 
         <label className="field">
-          <span>Role</span>
+          <span>Роль</span>
           <select value={role} onChange={(e) => setRole(e.target.value as 'freelancer' | 'client')}>
-            <option value="freelancer">Freelancer</option>
-            <option value="client">Client</option>
+            <option value="freelancer">Исполнитель</option>
+            <option value="client">Заказчик</option>
           </select>
         </label>
 
         {error && <p className="error">{error}</p>}
 
         <button className="primary-btn" type="submit" disabled={loading} data-testid="register-button">
-          {loading ? 'Creating account...' : 'Register'}
+          {loading ? 'Создаем аккаунт...' : 'Зарегистрироваться'}
         </button>
       </form>
     </AppLayout>

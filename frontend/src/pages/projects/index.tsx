@@ -40,7 +40,7 @@ export default function ProjectsPage() {
       const data = await apiFetch<Project[]>(`/api/projects${suffix}`, { skipAuth: true });
       setProjects(data);
     } catch (err: any) {
-      setError(err.message || 'Cannot load projects');
+      setError(err.message || 'Не удалось загрузить проекты');
     } finally {
       setLoading(false);
     }
@@ -56,24 +56,24 @@ export default function ProjectsPage() {
   }
 
   return (
-    <AppLayout title="Projects">
+    <AppLayout title="Проекты">
       <div className="card-grid">
         <section className="card">
           <form className="card-grid" onSubmit={onSubmit}>
             <div className="two-col">
               <label className="field">
-                <span>Search</span>
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Title or description" />
+                <span>Поиск</span>
+                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Название или описание" />
               </label>
 
               <label className="field">
-                <span>Min budget</span>
+                <span>Бюджет от</span>
                 <input value={budget} onChange={(e) => setBudget(e.target.value)} type="number" min="0" />
               </label>
             </div>
 
             <label className="field">
-              <span>Skills (comma separated)</span>
+              <span>Навыки (через запятую)</span>
               <input
                 value={skillsInput}
                 onChange={(e) => setSkillsInput(e.target.value)}
@@ -83,7 +83,7 @@ export default function ProjectsPage() {
 
             <div className="action-row">
               <button type="submit" className="primary-btn">
-                Apply filters
+                Применить фильтры
               </button>
               <button
                 type="button"
@@ -94,18 +94,18 @@ export default function ProjectsPage() {
                   setSkillsInput('');
                 }}
               >
-                Reset
+                Сбросить
               </button>
               {canCreateProject && (
                 <Link className="secondary-btn" href="/projects/new">
-                  New project
+                  Новый проект
                 </Link>
               )}
             </div>
           </form>
         </section>
 
-        {loading && <p className="muted">Loading projects...</p>}
+        {loading && <p className="muted">Загрузка проектов...</p>}
         {error && <p className="error">{error}</p>}
 
         {projects.map((project) => (
@@ -125,23 +125,23 @@ export default function ProjectsPage() {
                   </span>
                 ))
               ) : (
-                <span className="muted">No skills specified</span>
+                <span className="muted">Навыки не указаны</span>
               )}
             </div>
 
             <p className="muted">
-              Client: {project.user?.firstName} {project.user?.lastName} ({project.user?.email})
+              Заказчик: {project.user?.firstName} {project.user?.lastName} ({project.user?.email})
             </p>
 
             <div className="action-row">
               <Link className="primary-btn" href={`/projects/${project.id}`}>
-                Open project
+                Открыть проект
               </Link>
             </div>
           </article>
         ))}
 
-        {!loading && projects.length === 0 && <p className="muted">No projects found.</p>}
+        {!loading && projects.length === 0 && <p className="muted">Проекты не найдены.</p>}
       </div>
     </AppLayout>
   );

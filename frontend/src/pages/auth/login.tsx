@@ -27,14 +27,14 @@ export default function LoginPage() {
       await login({ email, password });
       await router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      setError(err.message || 'Не удалось войти');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AppLayout title="Sign In">
+    <AppLayout title="Вход">
       <form className="card card-grid" onSubmit={onSubmit}>
         <label className="field">
           <span>Email</span>
@@ -48,7 +48,7 @@ export default function LoginPage() {
         </label>
 
         <label className="field">
-          <span>Password</span>
+          <span>Пароль</span>
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -62,7 +62,7 @@ export default function LoginPage() {
         {error && <p className="error">{error}</p>}
 
         <button className="primary-btn" type="submit" disabled={loading} data-testid="login-button">
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? 'Входим...' : 'Войти'}
         </button>
       </form>
     </AppLayout>

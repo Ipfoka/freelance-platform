@@ -60,9 +60,9 @@ export default function DashboardPage() {
         body: JSON.stringify(formState),
       });
       await refreshProfile();
-      setSuccess('Profile updated');
+      setSuccess('Профиль обновлен');
     } catch (err: any) {
-      setError(err.message || 'Cannot update profile');
+      setError(err.message || 'Не удалось обновить профиль');
     } finally {
       setSaving(false);
     }
@@ -83,44 +83,44 @@ export default function DashboardPage() {
       );
       await refreshProfile();
       setSuccess(
-        `Profile boosted for ${result.boostDays} days until ${new Date(result.boostedUntil).toLocaleString()}.`,
+        `Профиль поднят на ${result.boostDays} дней, до ${new Date(result.boostedUntil).toLocaleString()}.`,
       );
     } catch (err: any) {
-      setError(err.message || 'Cannot purchase profile boost');
+      setError(err.message || 'Не удалось купить буст профиля');
     } finally {
       setBoostLoading(false);
     }
   }
 
   return (
-    <AppLayout title="Dashboard" requireAuth>
+    <AppLayout title="Кабинет" requireAuth>
       <div className="card-grid">
         <section className="card">
-          <h2>Quick actions</h2>
+          <h2>Быстрые действия</h2>
           <div className="action-row">
             <Link className="secondary-btn" href="/projects">
-              Browse projects
+              Смотреть проекты
             </Link>
             {user?.role === 'client' && (
               <Link className="primary-btn" href="/projects/new" data-testid="create-project">
-                Create project
+                Создать проект
               </Link>
             )}
             <Link className="secondary-btn" href="/wallet">
-              Open wallet
+              Открыть кошелек
             </Link>
             <Link className="secondary-btn" href="/deals">
-              Deal actions
+              Работа со сделками
             </Link>
           </div>
         </section>
 
         <section className="card">
-          <h2>Profile</h2>
+          <h2>Профиль</h2>
           <form className="card-grid" onSubmit={onSubmit}>
             <div className="two-col">
               <label className="field">
-                <span>First name</span>
+                <span>Имя</span>
                 <input
                   value={formState.firstName}
                   onChange={(e) => setFormState((prev) => ({ ...prev, firstName: e.target.value }))}
@@ -128,7 +128,7 @@ export default function DashboardPage() {
               </label>
 
               <label className="field">
-                <span>Last name</span>
+                <span>Фамилия</span>
                 <input
                   value={formState.lastName}
                   onChange={(e) => setFormState((prev) => ({ ...prev, lastName: e.target.value }))}
@@ -137,7 +137,7 @@ export default function DashboardPage() {
             </div>
 
             <label className="field">
-              <span>Bio</span>
+              <span>О себе</span>
               <textarea
                 value={formState.bio}
                 onChange={(e) => setFormState((prev) => ({ ...prev, bio: e.target.value }))}
@@ -148,49 +148,49 @@ export default function DashboardPage() {
             {success && <p className="success">{success}</p>}
 
             <button className="primary-btn" type="submit" disabled={saving}>
-              {saving ? 'Saving...' : 'Save profile'}
+              {saving ? 'Сохраняем...' : 'Сохранить профиль'}
             </button>
           </form>
         </section>
 
         <section className="card">
-          <h2>Wallet snapshot</h2>
+          <h2>Состояние кошелька</h2>
           {wallet ? (
             <div className="card-grid">
               <p>
-                <strong>Balance:</strong> {wallet.balance.toFixed(2)} {wallet.currency}
+                <strong>Баланс:</strong> {wallet.balance.toFixed(2)} {wallet.currency}
               </p>
               <p>
-                <strong>Pending:</strong> {wallet.pending.toFixed(2)} {wallet.currency}
+                <strong>В ожидании:</strong> {wallet.pending.toFixed(2)} {wallet.currency}
               </p>
               <p>
-                <strong>Plan:</strong> {profile?.plan}
+                <strong>Тариф:</strong> {profile?.plan}
               </p>
               {profile?.boostedUntil && (
                 <p>
-                  <strong>Boosted until:</strong>{' '}
+                  <strong>Буст активен до:</strong>{' '}
                   {new Date(profile.boostedUntil).toLocaleString()}
                 </p>
               )}
             </div>
           ) : (
-            <p className="muted">Wallet not found.</p>
+            <p className="muted">Кошелек не найден.</p>
           )}
         </section>
 
         {user?.role === 'freelancer' && (
           <section className="card card-grid">
-            <h2>Profile boost</h2>
+            <h2>Буст профиля</h2>
             <p className="muted">
-              Buy a temporary boost to get higher placement in top-executor ranking.
+              Временный буст дает приоритет в блоке рекомендованных исполнителей.
             </p>
             {boostOffer ? (
               <p>
-                Price: <strong>{boostOffer.price.toFixed(2)} {boostOffer.currency}</strong> for{' '}
-                {boostOffer.days} days.
+                Цена: <strong>{boostOffer.price.toFixed(2)} {boostOffer.currency}</strong> на{' '}
+                {boostOffer.days} дней.
               </p>
             ) : (
-              <p className="muted">Boost offer is currently unavailable.</p>
+              <p className="muted">Предложение буста сейчас недоступно.</p>
             )}
             <button
               className="primary-btn"
@@ -198,7 +198,7 @@ export default function DashboardPage() {
               disabled={!boostOffer || boostLoading}
               onClick={() => void onBuyBoost()}
             >
-              {boostLoading ? 'Processing...' : 'Buy profile boost'}
+              {boostLoading ? 'Проводим оплату...' : 'Купить буст профиля'}
             </button>
           </section>
         )}

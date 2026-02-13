@@ -34,15 +34,15 @@ export function AppLayout({
   }, [allowedRoles, isAuthenticated, isReady, requireAuth, router, user]);
 
   if (!isReady) {
-    return <div className="container">Loading...</div>;
+    return <div className="container">Загрузка...</div>;
   }
 
   if (requireAuth && !isAuthenticated) {
-    return <div className="container">Redirecting to login...</div>;
+    return <div className="container">Переход на страницу входа...</div>;
   }
 
   if (requireAuth && allowedRoles && user && !allowedRoles.includes(user.role)) {
-    return <div className="container">Redirecting to dashboard...</div>;
+    return <div className="container">Переход в личный кабинет...</div>;
   }
 
   return (
@@ -50,15 +50,15 @@ export function AppLayout({
       <header className="header">
         <div className="container nav-row">
           <Link href="/" className="logo">
-            Freelance Platform
+            TG Биржа Автоматизации
           </Link>
           <nav className="nav">
-            <Link href="/projects">Projects</Link>
-            {isAuthenticated && <Link href="/dashboard">Dashboard</Link>}
-            {isAuthenticated && <Link href="/deals">Deals</Link>}
-            {isAuthenticated && <Link href="/wallet">Wallet</Link>}
-            {!isAuthenticated && <Link href="/auth/login">Login</Link>}
-            {!isAuthenticated && <Link href="/auth/register">Register</Link>}
+            <Link href="/projects">Проекты</Link>
+            {isAuthenticated && <Link href="/dashboard">Кабинет</Link>}
+            {isAuthenticated && <Link href="/deals">Сделки</Link>}
+            {isAuthenticated && <Link href="/wallet">Кошелек</Link>}
+            {!isAuthenticated && <Link href="/auth/login">Вход</Link>}
+            {!isAuthenticated && <Link href="/auth/register">Регистрация</Link>}
             {isAuthenticated && (
               <button
                 className="secondary-btn"
@@ -68,7 +68,7 @@ export function AppLayout({
                   void router.push('/auth/login');
                 }}
               >
-                Logout
+                Выйти
               </button>
             )}
           </nav>
@@ -78,7 +78,7 @@ export function AppLayout({
       <main className="container">
         <div className="page-title-row">
           <h1>{title}</h1>
-          {user && <span className="role-badge">Role: {user.role}</span>}
+          {user && <span className="role-badge">Роль: {user.role}</span>}
         </div>
         {children}
       </main>
